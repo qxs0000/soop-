@@ -22,7 +22,6 @@
     'use strict';
     async function ensureNotificationPermission() {
         const hasRequested = await GM.getValue("hasRequestedNotificationPermission", false);
-        if (hasRequested) return;
         Notification.requestPermission().then((permission) => {
             GM.setValue("hasRequestedNotificationPermission", true);
             console.log("Notification permission:", permission);
