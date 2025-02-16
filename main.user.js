@@ -97,7 +97,59 @@
                 method: "POST",
                 url: "https://live.afreecatv.com/afreeca/player_live_api.php",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                data: "bid="`스트리머 ${broadcasterId} 정보 가져오기 실패:`, error);
+                data: "bid=" + encodeURIComponent(afreecaId),
+                onload: function(response) {
+                    try {
+                        const data = JSON.parse(response.responseText);
+                        const chan = data.CHANNEL;
+                        if (!chan) {
+                            return reject("No channel for " + afreecaId);
+                        }
+                        if (chan.RESULT === 1) {
+                            resolve({
+                                online: true,
+                                title: chan.TITLE || '',
+                                category: chan.CATE || '',
+                                broadNo: chan.BNO || ''
+                            });
+                        } else {
+                            resolve({ online: false });
+                        }
+                    } catch (e) {
+                        reject(e);
+                    }
+                },
+                onerror: function(err) {
+                    reject(err);
+                }
+            });
+        });
+    }
+    const broadcastState = {};
+    async function checkBroadcasts() {
+        let broadcasterList = await getBroadcasterList();
+        if (!broadcasterList || broadcasterList.length === 0) {
+            console.log("등록된 스트리머가 없습니다.");
+            return;
+        }
+        const now = Date.now();
+        const minInterval = 300000;
+        broadcasterList.forEach(async (broadcasterId) => {
+            try {
+                const info = await fetchAfreecaLive(broadcasterId);
+                if (info.online) {
+                    if (!broadcastState[broadcasterId] || broadcastState[broadcasterId] === false) {
+                        broadcastState[broadcasterId] = true;
+                        const notifTitle = `방송 알림: ${broadcasterId}`;
+                        const notifMessage = `${broadcasterId}님이 방송 중입니다!\n제목: ${info.title}`;
+                        showNotification(notifTitle, notifMessage);
+                    }
+                } else {
+                    broadcastState[broadcasterId] = false;
+                    console.log(`[${broadcasterId}] 방송 오프라인`);
+                }
+            } catch (error) {
+                console.error(`스트리머 ${broadcasterId} 정보 가져오기 실패:`, error);
             }
         });
     }
