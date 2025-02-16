@@ -65,7 +65,7 @@
             alert(`스트리머 "${toRemove}"의 등록이 해제되었습니다.`);
         }
     }
-    GM_registerMenuCommand("알림 간격 수정", async () => {
+    GM_registerMenuCommand("방송 체크 간격 수정", async () => {
         let currentMinutes = alertInterval / 60000;
         let newInterval = prompt("방송 체크 간격(분)을 입력하세요:", currentMinutes);
         if (newInterval) {
