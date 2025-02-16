@@ -4,9 +4,9 @@
 // @version      1.2
 // @description  사용자가 등록한 아프리카TV 방송인의 방송 상태를 확인하여 알림을 제공합니다.
 // @author       qxs
-// @match        play.sooplive.co.kr
-// @match        www.sooplive.co.kr
-// @match        vod.sooplive.co.kr
+// @match        play.sooplive.co.kr/*
+// @match        www.sooplive.co.kr/*
+// @match        vod.sooplive.co.kr/*
 // @grant        GM.xmlHttpRequest
 // @grant        GM.getValue
 // @grant        GM.setValue
