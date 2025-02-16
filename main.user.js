@@ -5,8 +5,8 @@
 // @description  사용자가 등록한 아프리카TV 스트리머의 방송 상태를 확인하여 알림을 제공합니다.
 // @icon         https://res.sooplive.co.kr/afreeca.ico
 // @author       qxs
-// @downloadURL  https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/main.user.js
-// @updateURL    https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/main.user.js
+// @downloadURL  https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
+// @updateURL    https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
 // @match        play.sooplive.co.kr/*
 // @match        www.sooplive.co.kr/*
 // @match        vod.sooplive.co.kr/*
@@ -39,13 +39,13 @@
         await GM.setValue(BROADCASTER_LIST_KEY, list);
     }
     async function addBroadcaster() {
-        let broadcasterId = prompt("알림을 받을 soop 스트리머머의 ID를 입력하세요:");
-        if (broadcasterId) {
+        let streamerID = prompt("알림을 받을 soop 스트리머의 ID를 입력하세요:");
+        if (streamerID) {
             let list = await getBroadcasterList();
-            if (!list.includes(broadcasterId)) {
-                list.push(broadcasterId);
+            if (!list.includes(streamerID)) {
+                list.push(streamerID);
                 await setBroadcasterList(list);
-                alert(`스트리머 "${broadcasterId}"이(가) 등록되었습니다.`);
+                alert(`스트리머 "${streamerID}"이(가) 등록되었습니다.`);
             } else {
                 alert("이미 등록된 스트리머입니다.");
             }
@@ -91,19 +91,20 @@
             onclick: () => { window.focus(); }
         });
     }
-    function fetchAfreecaLive(afreecaId) {
+    // soopID: 기존 afreecaId를 soopID로 변경
+    function fetchAfreecaLive(soopID) {
         return new Promise((resolve, reject) => {
             GM.xmlHttpRequest({
                 method: "POST",
                 url: "https://live.afreecatv.com/afreeca/player_live_api.php",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                data: "bid=" + encodeURIComponent(afreecaId),
+                data: "bid=" + encodeURIComponent(soopID),
                 onload: function(response) {
                     try {
                         const data = JSON.parse(response.responseText);
                         const chan = data.CHANNEL;
                         if (!chan) {
-                            return reject("No channel for " + afreecaId);
+                            return reject("No channel for " + soopID);
                         }
                         if (chan.RESULT === 1) {
                             resolve({
@@ -127,29 +128,29 @@
     }
     const broadcastState = {};
     async function checkBroadcasts() {
-        let broadcasterList = await getBroadcasterList();
-        if (!broadcasterList || broadcasterList.length === 0) {
+        let streamerList = await getBroadcasterList();
+        if (!streamerList || streamerList.length === 0) {
             console.log("등록된 스트리머가 없습니다.");
             return;
         }
         const now = Date.now();
         const minInterval = 300000;
-        broadcasterList.forEach(async (broadcasterId) => {
+        streamerList.forEach(async (streamerID) => {
             try {
-                const info = await fetchAfreecaLive(broadcasterId);
+                const info = await fetchAfreecaLive(streamerID);
                 if (info.online) {
-                    if (!broadcastState[broadcasterId] || broadcastState[broadcasterId] === false) {
-                        broadcastState[broadcasterId] = true;
-                        const notifTitle = `방송 알림: ${broadcasterId}`;
-                        const notifMessage = `${broadcasterId}님이 방송 중입니다!\n제목: ${info.title}`;
+                    if (!broadcastState[streamerID] || broadcastState[streamerID] === false) {
+                        broadcastState[streamerID] = true;
+                        const notifTitle = `방송 알림: ${streamerID}`;
+                        const notifMessage = `${streamerID}님이 방송 중입니다!\n제목: ${info.title}`;
                         showNotification(notifTitle, notifMessage);
                     }
                 } else {
-                    broadcastState[broadcasterId] = false;
-                    console.log(`[${broadcasterId}] 방송 오프라인`);
+                    broadcastState[streamerID] = false;
+                    console.log(`[${streamerID}] 방송 오프라인`);
                 }
             } catch (error) {
-                console.error(`스트리머 ${broadcasterId} 정보 가져오기 실패:`, error);
+                console.error(`스트리머 ${streamerID} 정보 가져오기 실패:`, error);
             }
         });
     }
