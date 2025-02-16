@@ -97,7 +97,7 @@
                 method: "POST",
                 url: "https://live.afreecatv.com/afreeca/player_live_api.php",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                data: "bid="머 ${broadcasterId} 정보 가져오기 실패:`, error);
+                data: "bid="`스트리머 ${broadcasterId} 정보 가져오기 실패:`, error);
             }
         });
     }
