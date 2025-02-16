@@ -3,6 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.2
 // @description  사용자가 등록한 아프리카TV 방송인의 방송 상태를 확인하여 알림을 제공합니다.
+// @icon         https://res.sooplive.co.kr/afreeca.ico
 // @author       qxs
 // @downloadURL  https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
 // @updateURL    https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
