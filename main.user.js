@@ -38,7 +38,7 @@
         await GM.setValue(BROADCASTER_LIST_KEY, list);
     }
     async function addBroadcaster() {
-        let broadcasterId = prompt("알림을 받을 아프리카TV 방송인의 ID (bid)를 입력하세요:");
+        let broadcasterId = prompt("알림을 받을 soop 방송인의 ID (bid)를 입력하세요:");
         if (broadcasterId) {
             let list = await getBroadcasterList();
             if (!list.includes(broadcasterId)) {
