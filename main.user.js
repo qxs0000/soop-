@@ -9,7 +9,7 @@
 // @updateURL    https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
 // @match        play.sooplive.co.kr/*
 // @match        www.sooplive.co.kr/*
-// @match        vod.sooplive.co.kr/*
+// @match        *://*/*
 // @grant        GM.xmlHttpRequest
 // @grant        GM.getValue
 // @grant        GM.setValue
@@ -20,18 +20,12 @@
 
 (async function() {
     'use strict';
-    async function ensureNotificationPermission() {
-        const hasRequested = await GM.getValue("hasRequestedNotificationPermission", false);
-        if (hasRequested) return;
-        Notification.requestPermission().then((permission) => {
-            GM.setValue("hasRequestedNotificationPermission", true);
-            console.log("Notification permission:", permission);
-        });
-    }
-    await ensureNotificationPermission();
+    if (window.top !== window.self) return;
+
     const BROADCASTER_LIST_KEY = 'broadcasterList';
     const ALERT_INTERVAL_KEY = 'alertInterval';
     let alertInterval = await GM.getValue(ALERT_INTERVAL_KEY, 300000);
+
     async function getBroadcasterList() {
         return await GM.getValue(BROADCASTER_LIST_KEY, []);
     }
@@ -83,6 +77,7 @@
     });
     GM_registerMenuCommand("스트리머 추가", async () => { await addBroadcaster(); });
     GM_registerMenuCommand("등록된 스트리머 관리", async () => { await manageBroadcasters(); });
+
     function showNotification(title, message) {
         GM_notification({
             title: title,
@@ -91,7 +86,6 @@
             onclick: () => { window.focus(); }
         });
     }
-    // soopID: 기존 afreecaId를 soopID로 변경
     function fetchAfreecaLive(soopID) {
         return new Promise((resolve, reject) => {
             GM.xmlHttpRequest({
@@ -126,33 +120,31 @@
             });
         });
     }
-    const broadcastState = {};
     async function checkBroadcasts() {
         let streamerList = await getBroadcasterList();
         if (!streamerList || streamerList.length === 0) {
             console.log("등록된 스트리머가 없습니다.");
             return;
         }
-        const now = Date.now();
-        const minInterval = 300000;
-        streamerList.forEach(async (streamerID) => {
+        for (const streamerID of streamerList) {
             try {
                 const info = await fetchAfreecaLive(streamerID);
                 if (info.online) {
-                    if (!broadcastState[streamerID] || broadcastState[streamerID] === false) {
-                        broadcastState[streamerID] = true;
+                    let lastNotified = await GM.getValue("lastNotified:" + streamerID, 0);
+                    if (lastNotified === 0) {
+                        await GM.setValue("lastNotified:" + streamerID, Date.now());
                         const notifTitle = `방송 알림: ${streamerID}`;
                         const notifMessage = `${streamerID}님이 방송 중입니다!\n제목: ${info.title}`;
                         showNotification(notifTitle, notifMessage);
                     }
                 } else {
-                    broadcastState[streamerID] = false;
+                    await GM.setValue("lastNotified:" + streamerID, 0);
                     console.log(`[${streamerID}] 방송 오프라인`);
                 }
             } catch (error) {
                 console.error(`스트리머 ${streamerID} 정보 가져오기 실패:`, error);
             }
-        });
+        }
     }
     let broadcastIntervalId = setInterval(checkBroadcasts, alertInterval);
     checkBroadcasts();
