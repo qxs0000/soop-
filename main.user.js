@@ -85,6 +85,7 @@
             onclick: () => { window.focus(); }
         });
         const audio = new Audio('https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/sound/sound.mp3');
+        audio.volume = 0.3;
         audio.play();
     }
     function fetchAfreecaLive(soopID) {
