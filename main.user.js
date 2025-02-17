@@ -84,6 +84,8 @@
             timeout: 5000,
             onclick: () => { window.focus(); }
         });
+        const audio = new Audio('https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/sound/sound.mp3');
+        audio.play();
     }
     function fetchAfreecaLive(soopID) {
         return new Promise((resolve, reject) => {
