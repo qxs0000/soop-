@@ -7,7 +7,6 @@
 // @author       qxs
 // @downloadURL  https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
 // @updateURL    https://github.com/qxs0000/sooplive-alart/raw/refs/heads/main/main.user.js
-// @match        play.sooplive.co.kr/*
 // @match        www.sooplive.co.kr/*
 // @match        *://*/*
 // @grant        GM.xmlHttpRequest
