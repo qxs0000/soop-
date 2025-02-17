@@ -1,6 +1,5 @@
 # soop방송알림
-tampermonkey를 이용한 soop 방송 알람 시스템 입니다
-
+tampermonkey를 이용한 soop 방송 알람
 ## 설치 방법
 tampermonkey 확장프로그램이 설치되어 있어야 합니다
 
