@@ -8,3 +8,5 @@ tampermonkey 확장프로그램이 설치되어 있어야 합니다
 tampermonkey를 설치하셨다면 아래를 눌러주세요
 
 [이곳을 클릭하여 유저스크립트를 추가합니다](https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/main.user.js)
+
+tampermonkey 확장프로그램 -> soop 방송알림 -> 스트리머 추가를 눌러 알림을 받을 스트리머를 추가합니다
