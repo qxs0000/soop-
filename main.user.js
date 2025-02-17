@@ -78,15 +78,15 @@
     GM_registerMenuCommand("등록된 스트리머 관리", async () => { await manageBroadcasters(); });
 
     function showNotification(title, message) {
+        const audio = new Audio('https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/sound/sound.mp3');
+        audio.volume = 0.2;
+        audio.play();
         GM_notification({
             title: title,
             text: message,
             timeout: 5000,
             onclick: () => { window.focus(); }
         });
-        const audio = new Audio('https://github.com/qxs0000/sooplive-alert/raw/refs/heads/main/sound/sound.mp3');
-        audio.volume = 0.2;
-        audio.play();
     }
     function fetchAfreecaLive(soopID) {
         return new Promise((resolve, reject) => {
